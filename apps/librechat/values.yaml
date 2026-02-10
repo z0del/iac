@@ -1,0 +1,116 @@
+# values.yaml
+librechat: # dependency namespace (wrapper)
+
+  librechat: # namespace interno do chart
+
+    # Variáveis de ambiente
+    configEnv:
+      # Aplicação
+      APP_TITLE: "LibreChat + Ollama (via Terraform)"
+      HOST: "0.0.0.0"
+      PORT: "3080"
+      SEARCH: "true"
+      
+      # Serviços (o chart gera automaticamente, mas você pode sobrescrever)
+      MONGO_URI: "mongodb://librechat-mongodb:27017/LibreChat"
+      MEILI_HOST: "http://librechat-meilisearch:7700"
+      
+      # Autenticação
+      ALLOW_EMAIL_LOGIN: "true"
+      ALLOW_REGISTRATION: "true"
+      ALLOW_SOCIAL_LOGIN: "false"
+      ALLOW_SOCIAL_REGISTRATION: "false"
+
+    # Configuração do LibreChat (librechat.yaml)
+    configYamlContent: |
+      version: 1.1.5
+      cache: true
+      endpoints:
+        custom:
+          - name: "Ollama"
+            apiKey: "ollama"
+            baseURL: "http://ollama.ollama.svc.cluster.local:11434/v1"
+            models:
+              default:
+                - "llama2:latest"
+              fetch: true
+            titleConvo: true
+            titleModel: "current_model"
+            modelDisplayLabel: "Ollama"
+
+    # Secret com credenciais (opcional)
+    # Se não existir, comente ou remova esta linha
+    # extraEnvVarsSecret: "librechat-credentials-env"
+
+  # Ingress
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: "25m"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    hosts:
+      - host: librechat.glukas.space
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+  # Resources
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+  # Persistence
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: "standard"
+
+  replicaCount: 1
+
+  # MongoDB subchart
+  mongodb:
+    enabled: true
+    image:
+      registry: docker.io
+      repository: bitnami/mongodb
+      tag: "latest"
+      pullPolicy: IfNotPresent
+    auth:
+      enabled: false
+    persistence:
+      enabled: true
+      size: 8Gi
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+
+  # Meilisearch subchart
+  meilisearch:
+    enabled: true
+    auth:
+      enabled: false
+    environment:
+      MEILI_NO_ANALYTICS: "true"
+      MEILI_ENV: "development"
+    persistence:
+      enabled: true
+      size: 1Gi
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "50m"
+      limits:
+        memory: "512Mi"
+        cpu: "250m"

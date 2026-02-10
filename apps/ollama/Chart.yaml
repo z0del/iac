@@ -1,0 +1,13 @@
+# Chart.yaml para Ollama no repositório Git
+# Este arquivo indica que é um Helm chart
+apiVersion: v2
+name: ollama
+description: Ollama deployment managed by ArgoCD
+type: application
+version: 1.0.0
+# appVersion: "latest"
+
+dependencies:
+  - name: ollama
+    version: "1.42.0"
+    repository: "https://otwld.github.io/ollama-helm/"

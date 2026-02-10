@@ -1,0 +1,21 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+!terraform.tfvars.example
+*.tfplan
+.terraform.hcl.lock
+
+# Secrets
+*.pem
+*.key
+.env
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+*.swp
