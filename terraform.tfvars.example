@@ -1,0 +1,15 @@
+# Exemplo de terraform.tfvars para Capítulo 4
+# Copie para terraform.tfvars e preencha com valores reais
+
+# Secrets (gere com: openssl rand -hex 32)
+jwt_secret         = "sua-chave-jwt-aqui"
+jwt_refresh_secret = "sua-chave-refresh-aqui"
+creds_key          = "sua-chave-creds-aqui-64-chars"
+creds_iv           = "sua-chave-iv-aqui-32-chars"
+
+# Git Repository (configure com seu repositório)
+git_repo_url = "https://github.com/seu-usuario/librechat-k8s-apps.git"
+git_branch   = "main"
+
+# ArgoCD version (opcional, usa default se não especificado)
+# argocd_version = "5.51.6"

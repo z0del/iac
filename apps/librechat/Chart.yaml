@@ -1,0 +1,10 @@
+apiVersion: v2
+name: librechat
+description: LibreChat deployment managed by ArgoCD
+type: application
+version: 1.0.0
+
+dependencies:
+  - name: librechat
+    version: "1.9.7"
+    repository: "oci://ghcr.io/danny-avila/librechat-chart"

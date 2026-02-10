@@ -1,0 +1,47 @@
+# values.yaml para Ollama
+# ArgoCD vai observar este arquivo e aplicar mudanças automaticamente
+ollama: # dependency namespace (wrapper)
+
+  ollama: # namespace interno do chart
+    gpu:
+      enabled: true
+      type: nvidia
+      number: 1
+    
+    models:
+      pull:
+        - llama3.2:3b
+        - deepseek-r1:14b
+      # Para adicionar novos modelos, apenas edite esta lista e faça commit!
+      # - llama3
+      # - mistral
+
+    # Configuração do Ingress
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: "0"  # Sem limite de upload
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+        nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+        nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+      hosts:
+        - host: ollama.glukas.space
+          paths:
+            - path: /
+              pathType: Prefix
+      tls: []  # Sem TLS por enquanto
+
+  # Service
+  service:
+    type: ClusterIP
+    port: 11434
+
+  # Recursos do pod
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "500m"
+    limits:
+      memory: "4Gi"
+      cpu: "2000m"
